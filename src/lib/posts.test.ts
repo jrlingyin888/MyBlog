@@ -6,6 +6,7 @@ import {
   getAllTags,
   groupByYear,
   makeExcerpt,
+  formatDate,
   type PostLike,
 } from './posts';
 
@@ -96,5 +97,13 @@ describe('makeExcerpt', () => {
     const out = makeExcerpt(post(), body, 200);
     expect(out.startsWith('-')).toBe(false);
     expect(out).toContain('well-known');
+  });
+});
+
+describe('formatDate', () => {
+  it('formats a date in zh-CN long form', () => {
+    const out = formatDate(new Date('2026-06-14T12:00:00Z'));
+    expect(out).toContain('2026年');
+    expect(out).toContain('月');
   });
 });

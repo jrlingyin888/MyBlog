@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import CategoryBadge from './CategoryBadge.astro';
-import { makeExcerpt } from '../lib/posts';
+import { makeExcerpt, formatDate } from '../lib/posts';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -9,11 +9,7 @@ interface Props {
 
 const { post } = Astro.props;
 const excerpt = makeExcerpt(post, post.body ?? '');
-const dateStr = post.data.date.toLocaleDateString('zh-CN', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const dateStr = formatDate(post.data.date);
 ---
 
 <article class="post-card">

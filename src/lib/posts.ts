@@ -45,6 +45,14 @@ export function groupByYear<T extends PostLike>(posts: T[]): { year: number; pos
     .map(([year, posts]) => ({ year, posts }));
 }
 
+export function formatDate(date: Date): string {
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
 export function makeExcerpt(post: PostLike, fallbackBody = '', maxLen = 80): string {
   if (post.data.excerpt) return post.data.excerpt;
   const plain = fallbackBody

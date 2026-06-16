@@ -2,20 +2,18 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import CategoryBadge from '../components/CategoryBadge.astro';
+import { makeExcerpt, formatDate } from '../lib/posts';
 
 interface Props {
   post: CollectionEntry<'posts'>;
 }
 
 const { post } = Astro.props;
-const dateStr = post.data.date.toLocaleDateString('zh-CN', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const dateStr = formatDate(post.data.date);
+const description = post.data.excerpt ?? makeExcerpt(post, post.body ?? '');
 ---
 
-<BaseLayout title={post.data.title} description={post.data.excerpt}>
+<BaseLayout title={post.data.title} description={description}>
   <article class="post">
     <header class="post-header">
       <div class="post-meta">
