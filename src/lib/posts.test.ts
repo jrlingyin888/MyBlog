@@ -83,11 +83,18 @@ describe('makeExcerpt', () => {
   });
 
   it('falls back to stripped, truncated body', () => {
-    const body = '# 标题\n\n这是**正文**内容，应该被截断。'.repeat(10);
+    const body = ('# 标题\n\n这是**正文**内容，应该被截断。\n\n').repeat(10);
     const out = makeExcerpt(post(), body, 20);
     expect(out.length).toBeLessThanOrEqual(21);
     expect(out.endsWith('…')).toBe(true);
     expect(out).not.toContain('#');
     expect(out).not.toContain('**');
+  });
+
+  it('strips list markers without mangling prose hyphens', () => {
+    const body = '- 第一点\n- 第二点\n\n这是 well-known 的写法。';
+    const out = makeExcerpt(post(), body, 200);
+    expect(out.startsWith('-')).toBe(false);
+    expect(out).toContain('well-known');
   });
 });

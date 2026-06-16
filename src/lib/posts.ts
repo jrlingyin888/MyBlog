@@ -48,11 +48,13 @@ export function groupByYear<T extends PostLike>(posts: T[]): { year: number; pos
 export function makeExcerpt(post: PostLike, fallbackBody = '', maxLen = 80): string {
   if (post.data.excerpt) return post.data.excerpt;
   const plain = fallbackBody
-    .replace(/^---[\s\S]*?---/, '')
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/[#>*_`~\-]/g, ' ')
+    .replace(/```[\s\S]*?```/g, ' ')            // strip fenced code
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')      // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // links -> text
+    .replace(/^\s{0,3}([*+-]|\d+\.)\s+/gm, '')  // list markers (per line)
+    .replace(/^\s{0,3}#{1,6}\s+/gm, '')         // heading markers (per line)
+    .replace(/^\s{0,3}>\s?/gm, '')              // blockquote markers (per line)
+    .replace(/[*_`~]/g, '')                      // inline emphasis/code marks
     .replace(/\s+/g, ' ')
     .trim();
   return plain.length > maxLen ? plain.slice(0, maxLen) + '…' : plain;

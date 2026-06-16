@@ -10,6 +10,8 @@ export const CATEGORIES = {
 
 export type Category = keyof typeof CATEGORIES;
 
+export const CATEGORY_VALUES = Object.keys(CATEGORIES) as [Category, ...Category[]];
+
 export function slugToCategory(slug: string): Category {
   const found = (Object.keys(CATEGORIES) as Category[]).find(
     (c) => CATEGORIES[c].slug === slug,
