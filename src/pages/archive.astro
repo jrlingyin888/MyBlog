@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import { getPublishedPosts, groupByYear } from '../lib/posts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const groups = groupByYear(getPublishedPosts(await getCollection('posts')));
+---
+
+<BaseLayout title="归档">
+  <h1 class="page-title">归档</h1>
+  {
+    groups.map((group) => (
+      <section class="archive-year">
+        <h2>{group.year}</h2>
+        <ul>
+          {group.posts.map((post) => (
+            <li>
+              <time datetime={post.data.date.toISOString()}>
+                {post.data.date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+              </time>
+              <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</BaseLayout>
