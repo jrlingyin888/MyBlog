@@ -6,14 +6,13 @@ import PostCard from '../../components/PostCard.astro';
 
 export async function getStaticPaths() {
   const posts = getPublishedPosts(await getCollection('posts'));
-  return getAllTags(posts).map((tag) => ({ params: { tag }, props: { tag } }));
+  return getAllTags(posts).map((tag) => ({
+    params: { tag },
+    props: { tag, posts: getPostsByTag(posts, tag) },
+  }));
 }
 
-const { tag } = Astro.props;
-const posts = getPostsByTag(
-  getPublishedPosts(await getCollection('posts')),
-  tag,
-);
+const { tag, posts } = Astro.props;
 ---
 
 <BaseLayout title={`#${tag}`}>
