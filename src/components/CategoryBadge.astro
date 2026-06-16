@@ -1,0 +1,18 @@
+---
+import { CATEGORIES, type Category } from '../consts';
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+const meta = CATEGORIES[category];
+---
+
+<a
+  class="badge"
+  href={`/category/${meta.slug}/`}
+  style={`--badge-bg:${meta.bg};--badge-fg:${meta.fg}`}
+>
+  {meta.label}
+</a>
