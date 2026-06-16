@@ -1,0 +1,205 @@
+:root {
+  --bg: #faf5ec;
+  --surface: #fffdf8;
+  --ink: #3a322a;
+  --text: #4a4036;
+  --muted: #8a7d6a;
+  --faint: #b09a78;
+  --accent: #b5542f;
+  --border: #e6dcc8;
+
+  --font-serif: Georgia, 'Songti SC', 'Noto Serif SC', serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --content-width: 680px;
+  --page-width: 960px;
+  --radius-card: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  width: 100%;
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+main.container { padding-block: 2.5rem 3.5rem; }
+
+/* ---------- Header ---------- */
+.site-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-block: 1.75rem 1rem;
+  border-bottom: 2px solid var(--accent);
+}
+.brand { display: flex; flex-direction: column; gap: 0.15rem; }
+.brand:hover { text-decoration: none; }
+.brand-name { font-size: 2rem; font-weight: 700; color: var(--ink); }
+.brand-tagline { font-style: italic; color: var(--muted); font-size: 0.95rem; }
+.site-nav { display: flex; gap: 1.25rem; font-size: 1rem; }
+.site-nav a { color: var(--ink); }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-block: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.site-footer nav { display: flex; gap: 1rem; }
+
+/* ---------- Card grid + post card ---------- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+.post-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem 1.4rem 1.4rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.post-card:hover {
+  box-shadow: 0 8px 24px rgba(58, 50, 42, 0.08);
+  transform: translateY(-2px);
+}
+.post-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.post-card-meta time { color: var(--faint); font-size: 0.85rem; }
+.post-card-title { margin: 0 0 0.5rem; font-size: 1.35rem; line-height: 1.3; }
+.post-card-title a { color: var(--ink); }
+.post-card-excerpt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---------- Category badge ---------- */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+}
+.badge:hover { text-decoration: none; opacity: 0.85; }
+
+/* ---------- Page title / archive / tags ---------- */
+.page-title { color: var(--ink); font-size: 1.8rem; margin: 0 0 1.5rem; }
+.archive-year { margin-bottom: 1.75rem; }
+.archive-year h2 { color: var(--accent); font-size: 1.25rem; margin: 0 0 0.5rem; }
+.archive-year ul { list-style: none; padding: 0; margin: 0; }
+.archive-year li { display: flex; gap: 0.9rem; padding: 0.3rem 0; }
+.archive-year time { color: var(--faint); font-variant-numeric: tabular-nums; }
+
+/* ---------- Article ---------- */
+.post { max-width: var(--content-width); margin-inline: auto; }
+.post-header { margin-bottom: 2rem; }
+.post-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.post-meta time { color: var(--faint); font-size: 0.9rem; }
+.post-header h1 { color: var(--ink); font-size: 2.1rem; line-height: 1.25; margin: 0 0 0.75rem; }
+.post-tags { list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem; padding: 0; margin: 0; }
+.post-tags a { color: var(--muted); font-size: 0.9rem; }
+
+.post-body { line-height: 1.85; }
+.post-body h2 { color: var(--ink); font-size: 1.5rem; margin: 2rem 0 0.75rem; }
+.post-body h3 { color: var(--ink); font-size: 1.25rem; margin: 1.5rem 0 0.5rem; }
+.post-body p { margin: 1rem 0; }
+.post-body img { max-width: 100%; border-radius: 8px; }
+.post-body blockquote {
+  margin: 1.25rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted);
+}
+/* inline code (warm small highlight) */
+.post-body :not(pre) > code {
+  background: #f0e6d6;
+  color: var(--accent);
+  padding: 0.1rem 0.35rem;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+}
+
+/* ---------- Warm dark code blocks ---------- */
+/* Background/foreground colors come from the custom Shiki theme;
+   the [data-warm-code] attribute is added by the transformer in astro.config.mjs. */
+pre[data-warm-code] {
+  position: relative;
+  border-radius: 12px;
+  padding: 2.6rem 1.1rem 1.1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  box-shadow: 0 6px 20px rgba(43, 37, 33, 0.18);
+  line-height: 1.85;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+pre[data-warm-code] code { font-family: inherit; }
+/* three mac window dots */
+pre[data-warm-code]::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #e06c5a;
+  box-shadow: 18px 0 #e0b25a, 36px 0 #8aa86a;
+}
+/* optional filename, supplied via ```lang title="..." */
+pre[data-warm-code][data-filename]::after {
+  content: attr(data-filename);
+  position: absolute;
+  top: 11px;
+  left: 68px;
+  font-size: 0.78rem;
+  color: #7d6f5e;
+  font-family: var(--font-mono);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  body { font-size: 17px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .site-header { align-items: flex-start; }
+  .brand-name { font-size: 1.7rem; }
+}
