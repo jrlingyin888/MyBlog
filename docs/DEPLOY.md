@@ -60,3 +60,10 @@ git push               # 之后 gh 提供凭据，无需再输密码
 
 ## 网站图标 favicon
 图标文件是 `public/favicon.svg`，直接改它再推送即可更新。浏览器对 favicon 缓存很顽固，部署后用 `Cmd+Shift+R` 强刷，或开无痕窗口/重开标签页才看得到新图标。
+
+## 背景轻音乐
+右下角有个轻音乐播放器，**默认关闭**，用户点击才播放，可随时暂停；翻页不中断。
+
+- 放曲子：把一首**免版税 / CC0** 的轻音乐命名为 `ambient.mp3`，放进 `public/music/`，`commit` + `push` 即自动生效（无需改代码）。来源参考：Pixabay Music、Free Music Archive、Incompetech、YouTube Audio Library。
+- 没放文件时：点击按钮会提示「轻音乐即将上线」，不报错。
+- 想改提示文案、按钮位置（右下/右上）、音量或动画：编辑 `src/components/MusicPlayer.astro`（音量在脚本里 `audio.volume = 0.35`）。
