@@ -1,0 +1,217 @@
+---
+// 背景轻音乐播放器：默认关闭，点击开启，跨视图过渡保活。
+---
+
+<div class="music-player" id="music-player" transition:persist="music-player">
+  <div class="mp-hint" id="mp-hint" hidden>
+    要不要来点轻音乐，放松一下
+    <button class="mp-x" id="mp-x" type="button" aria-label="关闭提示">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <button class="mp-btn idle" id="mp-btn" type="button" aria-label="播放轻音乐">
+    <svg class="mp-note" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="currentColor">
+      <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" />
+    </svg>
+    <span class="mp-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+  <div class="mp-toast" id="mp-toast" hidden>轻音乐即将上线</div>
+  <audio id="mp-audio" loop preload="none" src="/music/ambient.mp3"></audio>
+</div>
+
+<style>
+  .music-player {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 50;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    font-family: var(--font-serif);
+  }
+  .mp-hint {
+    position: relative;
+    background: #fffdf8;
+    border: 1px solid #e6dcc8;
+    border-radius: 12px;
+    padding: 9px 30px 9px 12px;
+    max-width: 190px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #4a4036;
+    box-shadow: 0 6px 18px rgba(58, 50, 42, 0.1);
+    animation: mp-bubble 0.5s ease-out both;
+  }
+  .mp-hint[hidden] { display: none; }
+  .mp-hint::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    bottom: 16px;
+    width: 10px;
+    height: 10px;
+    background: #fffdf8;
+    border-right: 1px solid #e6dcc8;
+    border-bottom: 1px solid #e6dcc8;
+    transform: rotate(-45deg);
+  }
+  .mp-x {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: #b09a78;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    padding: 2px;
+  }
+  .mp-btn {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: none;
+    background: #b5542f;
+    color: #faf5ec;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(181, 84, 47, 0.35);
+    overflow: hidden;
+  }
+  .mp-btn.idle { animation: mp-breathe 3s ease-in-out infinite; }
+  .mp-bars { display: none; gap: 3px; align-items: center; height: 24px; }
+  .mp-btn.playing .mp-bars { display: flex; }
+  .mp-btn.playing .mp-note { display: none; }
+  .mp-bars i {
+    width: 3px;
+    height: 6px;
+    background: #faf5ec;
+    border-radius: 2px;
+    animation: mp-wave 1s ease-in-out infinite;
+  }
+  .mp-bars i:nth-child(2) { animation-delay: 0.18s; }
+  .mp-bars i:nth-child(3) { animation-delay: 0.36s; }
+  .mp-rip {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 58px;
+    height: 58px;
+    margin: -29px 0 0 -29px;
+    border-radius: 50%;
+    background: #faf5ec;
+    opacity: 0.4;
+    animation: mp-ripple 0.6s ease-out forwards;
+    pointer-events: none;
+  }
+  .mp-toast {
+    position: absolute;
+    right: 0;
+    bottom: 70px;
+    background: #2b2521;
+    color: #e8e0d4;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    animation: mp-bubble 0.3s ease-out both;
+  }
+  .mp-toast[hidden] { display: none; }
+  @keyframes mp-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+  @keyframes mp-wave { 0%, 100% { height: 6px; } 50% { height: 18px; } }
+  @keyframes mp-bubble { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes mp-ripple { 0% { transform: scale(0); opacity: 0.45; } 100% { transform: scale(2.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .mp-btn.idle, .mp-bars i, .mp-hint, .mp-toast { animation: none; }
+    .mp-rip { display: none; }
+  }
+  @media (max-width: 640px) {
+    .music-player { right: 14px; bottom: 14px; }
+    .mp-hint { max-width: 150px; font-size: 12px; }
+  }
+</style>
+
+<script>
+  function initMusicPlayer() {
+    const root = document.getElementById('music-player');
+    if (!root || root.dataset.mpInit === '1') return;
+    root.dataset.mpInit = '1';
+
+    const btn = document.getElementById('mp-btn');
+    const audio = document.getElementById('mp-audio') as HTMLAudioElement | null;
+    const hint = document.getElementById('mp-hint');
+    const closeBtn = document.getElementById('mp-x');
+    const toast = document.getElementById('mp-toast');
+    if (!btn || !audio) return;
+
+    audio.volume = 0.35;
+    const ON = 'mp-on';
+    const HINT = 'mp-hint-dismissed';
+
+    const setUI = (playing: boolean) => {
+      btn.classList.toggle('playing', playing);
+      btn.classList.toggle('idle', !playing);
+      btn.setAttribute('aria-label', playing ? '暂停轻音乐' : '播放轻音乐');
+    };
+    const dismissHint = () => {
+      if (hint) hint.hidden = true;
+      try { localStorage.setItem(HINT, '1'); } catch {}
+    };
+    const showToast = (msg: string) => {
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.hidden = false;
+      setTimeout(() => { toast.hidden = true; }, 2500);
+    };
+    const ripple = () => {
+      const r = document.createElement('span');
+      r.className = 'mp-rip';
+      btn.appendChild(r);
+      setTimeout(() => r.remove(), 620);
+    };
+
+    btn.addEventListener('click', () => {
+      ripple();
+      if (audio.paused) {
+        audio
+          .play()
+          .then(() => {
+            setUI(true);
+            try { localStorage.setItem(ON, '1'); } catch {}
+          })
+          .catch(() => {
+            setUI(false);
+            showToast('轻音乐即将上线');
+          });
+        dismissHint();
+      } else {
+        audio.pause();
+        setUI(false);
+        try { localStorage.setItem(ON, '0'); } catch {}
+      }
+    });
+
+    closeBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dismissHint();
+    });
+
+    let dismissed = false;
+    try { dismissed = localStorage.getItem(HINT) === '1'; } catch {}
+    if (hint && !dismissed) hint.hidden = false;
+
+    let wantOn = false;
+    try { wantOn = localStorage.getItem(ON) === '1'; } catch {}
+    if (wantOn) {
+      audio.play().then(() => setUI(true)).catch(() => setUI(false));
+    }
+  }
+
+  initMusicPlayer();
+  document.addEventListener('astro:page-load', initMusicPlayer);
+</script>
