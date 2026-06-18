@@ -98,6 +98,15 @@ describe('makeExcerpt', () => {
     expect(out.startsWith('-')).toBe(false);
     expect(out).toContain('well-known');
   });
+
+  it('strips inline SVG and HTML so it never leaks into the excerpt', () => {
+    const body = '<svg width="10" height="10"><circle cx="5" cy="5" r="4"/></svg>\n\n这是正文，应该出现在摘要里。';
+    const out = makeExcerpt(post(), body, 200);
+    expect(out).not.toContain('<');
+    expect(out).not.toContain('circle');
+    expect(out).not.toContain('svg');
+    expect(out).toContain('这是正文');
+  });
 });
 
 describe('formatDate', () => {

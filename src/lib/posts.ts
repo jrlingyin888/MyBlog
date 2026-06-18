@@ -57,6 +57,8 @@ export function makeExcerpt(post: PostLike, fallbackBody = '', maxLen = 80): str
   if (post.data.excerpt) return post.data.excerpt;
   const plain = fallbackBody
     .replace(/```[\s\S]*?```/g, ' ')            // strip fenced code
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')      // strip inline SVG blocks
+    .replace(/<[^>]+>/g, ' ')                    // strip remaining HTML tags
     .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')      // images
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')    // links -> text
     .replace(/^\s{0,3}([*+-]|\d+\.)\s+/gm, '')  // list markers (per line)
