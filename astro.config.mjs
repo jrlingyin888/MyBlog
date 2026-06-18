@@ -18,7 +18,7 @@ function warmCodeTransformer() {
 
 // Production URL (Vercel). Update here if the domain changes.
 export default defineConfig({
-  site: 'https://my-blog-two-tau-21.vercel.app',
+  site: 'https://manyidian.vercel.app',
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {
